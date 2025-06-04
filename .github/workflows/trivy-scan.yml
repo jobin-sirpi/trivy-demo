@@ -24,7 +24,7 @@ jobs:
       # Build the Docker image
       - name: Build Docker image
         run: |
-          docker build -t trivy-python-demo:${{ github.sha }} .
+          docker build -t trivy-demo:${{ github.sha }} .
 
       # Install Trivy
       - name: Install Trivy
@@ -35,7 +35,7 @@ jobs:
       - name: Run Trivy vulnerability scanner (image)
         uses: aquasecurity/trivy-action@master
         with:
-          image-ref: 'trivy-python-demo:${{ github.sha }}'
+          image-ref: 'trivy-demo:${{ github.sha }}'
           format: 'sarif'
           output: 'trivy-image-results.sarif'
           severity: 'CRITICAL,HIGH'
@@ -59,9 +59,11 @@ jobs:
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-image-results.sarif'
+          category: 'trivy-image-scan'
 
       # Upload filesystem scan results to GitHub Security tab
       - name: Upload Trivy filesystem scan results
         uses: github/codeql-action/upload-sarif@v3
         with:
           sarif_file: 'trivy-fs-results.sarif'
+          category: 'trivy-filesystem-scan'
